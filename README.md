@@ -1,69 +1,23 @@
-# StoryKeeper Interview Scheduling MVP
+# Curated Memoirs by StoryKeepeer — Application Page
 
-Production-ready MVP for authors to publish interview availability and customers to book, reschedule, or cancel sessions.
+This project is a single-page, static application website for Curated Memoirs by StoryKeepeer. It is built with vanilla HTML, CSS, and JavaScript and is designed to work with Netlify-style form capture as well as local static hosting.
 
-## Stack
-- Next.js 14 (App Router) + TypeScript
-- Tailwind + shadcn/ui
-- Prisma + PostgreSQL
-- NextAuth (email magic link + Google optional)
-- Luxon for timezone-safe scheduling
-- Resend (or SMTP via nodemailer) for email
+## Files
 
-## Setup
+- `index.html` — Page structure and content.
+- `styles.css` — Styling, responsive layout, light/dark themes.
+- `app.js` — Form behavior, validation, conditional fields, and smooth scrolling.
 
-### 1) Install dependencies
-```bash
-npm install
-```
+## Local preview
 
-### 2) Configure environment
-Create a `.env` file with:
-```
-DATABASE_URL=postgresql://postgres:postgres@localhost:5432/storykeeper
-NEXTAUTH_URL=http://localhost:3000
-NEXTAUTH_SECRET=replace-me
-EMAIL_FROM=StoryKeeper <no-reply@storykeeper.test>
-EMAIL_SERVER=smtp://user:pass@localhost:1025
-RESEND_API_KEY=
-GOOGLE_CLIENT_ID=
-GOOGLE_CLIENT_SECRET=
-JOBS_SECRET=replace-me
-```
+Open `index.html` directly in a browser. The form will validate client-side and show a success panel when `?success=true` or `#success` is present in the URL.
 
-### 3) Run migrations + seed
-```bash
-npx prisma generate
-npx prisma migrate dev
-npm run prisma:seed
-```
+## Netlify form capture
 
-### 4) Start dev server
-```bash
-npm run dev
-```
+The form is configured with:
 
-## Core flows
-- **Customer booking**: choose author → interview type + duration → pick slot → confirm.
-- **Author settings**: update weekly availability and add overrides.
-- **Admin dashboard**: filter appointments by author/date/status and open a booking.
+- `data-netlify="true"`
+- A hidden `form-name` input matching the form’s `name`
+- A honeypot field via `data-netlify-honeypot`
 
-## API Endpoints
-- `GET /api/authors`
-- `GET /api/authors/:id/interview-types`
-- `GET /api/authors/:id/slots?typeId=...&duration=...&from=...&to=...&tz=...`
-- `POST /api/appointments`
-- `POST /api/appointments/:id/reschedule`
-- `POST /api/appointments/:id/cancel`
-- `POST /api/admin/appointments/:id/edit`
-- `POST /api/jobs/send-reminders` (cron with `x-job-secret` header)
-
-## Scheduling notes
-- Availability is stored in the author timezone and converted to UTC for storage and booking.
-- Slot generation respects weekly rules, overrides, buffers, minimum notice, and existing bookings.
-- Database-level exclusion constraint prevents double booking for pending/confirmed appointments.
-
-## Testing
-```bash
-npm run test
-```
+When hosted on Netlify, submissions will be captured automatically.
